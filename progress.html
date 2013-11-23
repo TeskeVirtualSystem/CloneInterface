@@ -1,0 +1,132 @@
+<html> 
+	<head> 
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no, target-densitydpi=device-dpi" /> 
+		<title>TVS DClone Tool</title>
+		<link rel="stylesheet"  href="css/jquery.mobile-1.1.0.min.css" /> 
+		<script type="text/javascript" src="js/jquery.js"></script>
+		<script type="text/javascript" src="js/jquery.mobile-1.1.0.min.js"></script>
+		<script type="text/javascript" src="js/jquery.maskedinput-1.3.min.js"></script>
+		<script type="text/javascript" src="js/jquery.form.js"></script>
+
+		<style>
+			.ui-progressbar-value { background-image: url(imgs/pbar-ani.gif); }
+		</style>
+		<script type="text/javascript"> 
+			var orgdisk = "None",destdisk = "None";
+			$(document).bind("mobileinit", function(){
+				$.mobile.ajaxFormsEnabled = false;
+			  	$.mobile.selectmenu.prototype.options.nativeMenu = false;
+			});
+			jQuery.fn.center = function () {
+				this.css("position","absolute");
+				this.css("top", (($(window).height() - this.outerHeight()) / 2) + 		$(window).scrollTop() + "px");
+				this.css("left", (($(window).width() - this.outerWidth()) / 2) + 	$(window).scrollLeft() + "px");
+				return this;
+			}
+			jQuery.fn.vcenter = function () {
+				this.css("position","absolute");
+				this.css("top", (($(window).height() - this.outerHeight()) / 2) + 		$(window).scrollTop() + "px");
+				return this;
+			}
+			jQuery.fn.hcenter = function () {
+				this.css("position","absolute");
+				this.css("left", (($(window).width() - this.outerWidth()) / 2) + 	$(window).scrollLeft() + "px");
+				return this;
+			}
+			$(document).ready(function(){ 
+				$('#content').css('backgroundImage', 'url(\'imgs/bg32_light.png\'), -webkit-gradient(radial, 50% 50%, 0, 50% 50%, 250, from(#EEEEEE), to(#333333))' );
+				$('.collapsible .head').click(function() {
+					$(this).next().toggle('slow');
+					return false;
+				}).next().hide();
+				$('#diskorgdata').hide();
+				$('#diskdestdata').hide();
+				$('#origem').change(function()	{
+					diskCallBack($(this).attr('value'),true);
+				});
+				$('#destino').change(function()	{
+					diskCallBack($(this).attr('value'),false);
+				});
+
+				window.blinker = setInterval(function(){
+						$(".blink").animate({opacity:0.3},400,"linear",function(){
+						  $(this).animate({opacity:1},400);
+						});
+				},900);
+				$('#warndiv').hide();
+				//location.href='callback://loaddisks:none';
+				$('#origem').append('<option value="none">Nenhum disco</option>').selectmenu('refresh', true);
+				$('#destino').append('<option value="none">Nenhum disco</option>').selectmenu('refresh', true);
+				setInterval(function() { $('#progress').val($('#progress').val()+1); }, 1000);
+			});		
+			function diskCallBack(disk,pos) {
+				if(disk != "none")
+					location.href='callback://loaddiskdata:'+(pos?"origem":"destino")+":"+disk;
+				else
+					if(pos)
+						$('#diskorgdata').hide('slow');
+					else
+						$('#diskdestdata').hide('slow');
+				if(pos)	
+					orgdisk = disk;
+				else
+					destdisk = disk;
+					
+				if( (orgdisk != destdisk) && (orgdisk != "None") && (destdisk != "None") ) {
+					$('#startclone').button('enable');
+					$('#warndiv').show();
+				}else{
+					$('#startclone').button('disable');
+					$('#warndiv').hide();
+				}
+			}
+			function addDisk(disk,model) {
+				console.log("Adicionando disco a lista: "+disk);
+				$('#origem').append('<option value="'+disk+'">'+disk+' - '+model+'</option>').selectmenu('refresh', true);
+				$('#destino').append('<option value="'+disk+'">'+disk+' - '+model+'</option>').selectmenu('refresh', true);
+			}
+			function setDisk(diskdata,pos) {
+				if(pos)	{
+					$("#orgdiskcont").html(diskdata);
+					$('#diskorgdata').show('slow');
+				}else{
+					$("#destdiskcont").html(diskdata);
+					$('#diskdestdata').show('slow');
+				}
+			}
+			function isEmpty( inputStr ) { if ( null == inputStr || "" == inputStr ) { return true; } return false; }
+			
+		</script> 
+	</head> 
+	<body ALLOWTRANSPARENCY="true" style="background: url('imgs/bg32.jpg');">
+		<div id="content" data-role="page" class="content" >
+				<div id="selectdiv" class=" ui-content ui-body-a" style="padding: 5 10 5 10; text-align: center; opacity: 0.85">
+					<img src="imgs/logo.png" width="240"><BR>
+					<div id="explanation">
+						Este aplicativo permite fazer a cópia bloco a bloco de um disco para outro.
+						Os discos podem ter tamanhos diferentes porém caso o disco de destino seja menor do que o de origem dados poderão ser perdidos.
+					</div>
+					Disco de Origem		<select id="origem" data-native-menu="false" ></select><BR>
+					<div id="diskorgdata" data-role="collapsible">
+						<h3 >Conte&uacute;do do disco de origem</h3>
+						<div id="orgdiskcont"></div>
+					</div>
+					Disco de Destino	<select id="destino" data-native-menu="false" ></select><BR>
+					<div id="diskdestdata" data-role="collapsible">
+						<h3>Conte&uacute;do do disco de destino</h3>
+						<div id="destdiskcont"></div>
+					</div>	
+					<div id="warndiv" class="blink"><font color=red><B>Aviso! TODOS os dados no disco de destino serão perdidos!</B></font></div>
+					<input type="button" value="Clonar Disco" id="startclone" disabled>
+				</div>
+				<div id="progressdiv" class="ui-content ui-body-a" style="padding: 5 10 5 10; text-align: center; vertical-align: middle; opacity: 0.85">
+						<div id="message">Aguarde enquanto é feito a cópia de /dev/XXX para /dev/YYY</div>
+						<fieldset class="ui-grid-a">
+							<div class="ui-block-a"><progress id="progress" value="0" max="100" style="width: 400px; height:20px;"></progress></div>
+							<div class="ui-block-b"><div id="progresslabel">XXX%</div></div>	   
+						</fieldset>
+						
+				</div>
+			</div>
+	</body> 
+</html> 
