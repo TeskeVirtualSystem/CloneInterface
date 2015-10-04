@@ -1,0 +1,4 @@
+#!/bin/bash
+
+cd /usr/local/dclonetool/
+python clone.py

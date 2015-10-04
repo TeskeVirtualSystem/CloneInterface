@@ -1,0 +1,41 @@
+#!/bin/bash
+
+PKG_NAME="dclonetool"
+
+REPO_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../"
+DIR="/tmp/package/${PKG_NAME}"
+APPDIR="${DIR}/usr/local/dclonetool/"
+LINKDIR="${DIR}/usr/local/bin/"
+DEBIAN="${DIR}/DEBIAN"
+
+rm -rf ${DIR}
+
+mkdir -p ${DIR}
+mkdir -p ${DEBIAN}
+mkdir -p ${APPDIR}
+mkdir -p ${LINKDIR}
+
+G_REV=`git rev-parse --short=8 HEAD`
+DATE=`date +"%Y%m%d%H%M%S"`
+VERSION="1-git+${DATE}.${G_REV}~$1"
+
+cat <<- EOF > ${DEBIAN}/control
+Package: ${PKG_NAME}
+Priority: optional
+Maintainer: Lucas Teske <lucas@teske.net.br>
+Architecture: all
+Description: Graphical DCFLDD Clone Tool
+Version: ${VERSION}
+Depends: python-webkit, python-simplejson, dcfldd
+EOF
+
+DEB_PKG="${PKG_NAME}_${VERSION}_all.deb"
+
+cp -rf ${REPO_DIR}/* ${APPDIR}
+rm -fr ${APPDIR}/*.pyc
+
+mv ${APPDIR}/dclone ${LINKDIR}
+
+dpkg-deb -b ${DIR} ./${DEB_PKG}
+
+echo ${DEB_PKG}

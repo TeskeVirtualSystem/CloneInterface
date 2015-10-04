@@ -9,15 +9,14 @@
 #                                 #
 ###################################
 #         TVS DClone Tool         #
-#      Version				1.0	    #
-#	  By: Teske Virtual Systems    #
-#	  This tool is release under   #
+#      Version				1.0	        #
+#	  By: Teske Virtual Systems     #
+#	  This tool is release under    #
 #     GPL license, for more       #
 #   details see license.txt file  #
 ###################################
 #    http://www.teske.net.br      #
 ###################################
-
 
 
 import commands
