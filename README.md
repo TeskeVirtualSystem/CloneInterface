@@ -10,6 +10,8 @@ This is an dcfldd interface made with Python Webkit. Its a WIP program.
 
 Dependencies: dcfldd, python-webkit, python-simplejson
 
+Now with debian package generator
+
 TODO
 ==============
 *   Add option to export to a file
