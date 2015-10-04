@@ -26,8 +26,8 @@ function getSudo() {
 }
 
 function getDiskSize()	{
-	SIZE=`sudo fdisk -l $1 |grep $1: | awk '{print $3}'`
-	UNIT=`sudo fdisk -l $1 |grep $1: | awk '{print $4}' |cut -d, -f1`
+	SIZE=`sudo fdisk -l $1  2>>/dev/null |grep $1: | awk '{print $3}'`
+	UNIT=`sudo fdisk -l $1  2>>/dev/null |grep $1: | awk '{print $4}' |cut -d, -f1`
 	if [ -z $SIZE ]
 	then
 		echo "Disco inexistente"
@@ -45,7 +45,7 @@ function getDisks() {
 	DISKS=""
 	for i in a b c d e f g h i j k l m n o p q r s t u v w x y z
 	do
-		TOUT=`sudo fdisk -l /dev/sd$i |grep /dev/sd$i: | awk '{print $3}'`
+		TOUT=`sudo fdisk -l /dev/sd$i  2>>/dev/null |grep /dev/sd$i: | awk '{print $3}'`
 		#ls /dev/sd$i 1>> /dev/null 2>> /dev/null
 		#if [ $?" -eq 0 ]
 		if [ -z $TOUT ]

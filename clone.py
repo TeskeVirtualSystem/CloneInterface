@@ -68,11 +68,11 @@ def LoadDisks():
 		dsk = dsk.split(' ')
 		print dsk
 		if	dsk[1] == 'GB':
-			dsk[0] = float(dsk[0]) * 1000
+			dsk[0] = float(dsk[0].replace(",",".")) * 1000
 		elif	dsk[1] == 'KB':
-			dsk[0] = float(dsk[0]) / 1000
+			dsk[0] = float(dsk[0].replace(",",".")) / 1000
 		else:
-			dsk[0] = float(dsk[0])
+			dsk[0] = float(dsk[0].replace(",","."))
 		dpk = (disk,dsk[0],model)
 		disks.append(dpk)
 

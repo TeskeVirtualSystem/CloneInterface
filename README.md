@@ -8,6 +8,8 @@
 
 This is an dcfldd interface made with Python Webkit. Its a WIP program.
 
+Dependencies: dcfldd, python-webkit, python-simplejson
+
 TODO
 ==============
 *   Add option to export to a file
